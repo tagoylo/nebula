@@ -12,13 +12,13 @@
 board-config:
   field_1:
     name: board-name
-    default: zynq-zc706-adv7511-fmcdaq2
-    help: "Board plus carrier name used by hdl project.\nThis is usually the same as the boot folder name of the AD-FMC-SDCARD"
+    default: zynq-zc702-adv7511-ad9361-fmcomms2-3
+    help: "Board plus carrier name used by hdl project.\nThis is usually the same as the boot folder name of the AD-FMC-SDCARD."
     optional: False
   field_2:
     name: reference-boot-folder
-    default: zynq-zc706-adv7511-fmcdaq2
-    help: "Folder name where reference boot files exit for specific board"
+    default: zynq-zc702-adv7511-ad9361-fmcomms2-3-4
+    help: "Folder name where reference boot files exist for specific board. \nThis is the same as the boot folder name of the AD-FMC-SDCARD."
     optional: False
   field_3:
     name: monitoring-interface

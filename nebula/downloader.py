@@ -58,7 +58,7 @@ def gen_url(ip, branch, folder, filename, url_template):
 
 
 class downloader(utils):
-    def __init__(self, http_server_ip=None, yamlfilename=None, board_name=None):
+    def __init__(self, http_server_ip=None, yamlfilename=None, board_name=None, reference_boot_folder=None):
         self.http_server_ip = http_server_ip
         self.update_defaults_from_yaml(
             yamlfilename, __class__.__name__, board_name=board_name
@@ -137,7 +137,7 @@ class downloader(utils):
         self.download(url, filename)
 
     def _get_files(
-        self, design_name, details, source, source_root, branch, firmware=False
+        self, design_name, dtb_folder, details, source, source_root, branch, firmware=False
     ):
         kernel = False
         kernel_root = False
@@ -180,21 +180,27 @@ class downloader(utils):
             # Get kernel
             print("Get", kernel)
             self._get_file(kernel, source, kernel_root, source_root, branch)
+            
             # Get BOOT.BIN
             print("Get BOOT.BIN")
+
             self._get_file("BOOT.BIN", source, design_source_root, source_root, branch)
-            # Get device tree
-            print("Get", dt)
-            self._get_file(dt, source, design_source_root, source_root, branch)
+            
             # Get support files (bootgen_sysfiles.tgz)
             print("Get support")
             self._get_file(
                 "bootgen_sysfiles.tgz", source, design_source_root, source_root, branch
             )
+            # Get device tree
+            print("Get", dt)
+            if dtb_folder!=design_name:
+                design_source_root = design_name+ '/' +dtb_folder
+            self._get_file(dt, source, design_source_root, source_root, branch)
 
     def download_boot_files(
         self,
         design_name,
+        dtb_folder='',
         source="local_fs",
         source_root="/var/lib/tftpboot",
         branch="master",
@@ -206,6 +212,7 @@ class downloader(utils):
 
             Parameters:
                 design_name: Target design name (same as boot file folder on SD card)
+                dtb_folder: Applicable to target design name with sub-folder for devicetree (name of sub-folder)
                 source: Source location type. Options: local_fs, http, artifactory
                 source_root: Root location of files. Dependent on source parameter
                     For local_fs this is a system path
@@ -227,6 +234,7 @@ class downloader(utils):
 
         self._get_files(
             design_name,
+            dtb_folder,
             board_configs[design_name],
             source,
             source_root,
